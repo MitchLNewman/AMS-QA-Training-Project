@@ -7,11 +7,11 @@ class Category(db.Model):
     name = db.Column(db.String(30), nullable=False)
     products = db.relationship('Product', backref='category', lazy=True)
 
-
+    
     def __repr__(self):
         return ''.join([
-            'Product ID: ', str(self.id), '\r\n',
-            'Name: ', self.name, '\r\n', self.description
+            'Category ID: ', str(self.id), '\r\n',
+            'Name: ', self.name
         ])
     
 class Product(db.Model):
@@ -19,8 +19,8 @@ class Product(db.Model):
     name = db.Column(db.String(30), nullable=False)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(100), nullable=False, default='default.jpg')
-    category = db.Column(db.String(30), nullable=False)
+    image = db.Column(db.String(100), nullable=False, default='default.jpeg')
+    category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
 
     def __repr__(self):
         return ''.join([
