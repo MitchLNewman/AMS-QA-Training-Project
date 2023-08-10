@@ -17,3 +17,11 @@ pip install -r requirements.txt
 python3 app.py
 
 ```
+
+#### Run create.py to check if code is working.
+
+```bash
+
+python3 create.py
+
+```
