@@ -2,6 +2,7 @@
 
 ### This is a store front workshop for QA Training
 
+#### This will be used as documentation for the QA Store project. I have decided to design a store front webpage based on the requirements laid out in the project brief description, creating a shop that sells plants letting users navigate the website pages, view products, add them to cart and checkout
 
 #### Install requirments folder for imports.
 ```bash
