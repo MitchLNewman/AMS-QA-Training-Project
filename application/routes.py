@@ -80,6 +80,7 @@ def empty_cart():
     cart = Cart.query.filter_by(user_id=session['user_id']).first()
     # remove product from cart
     cart.empty_cart()
+    return redirect(url_for('cart'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
