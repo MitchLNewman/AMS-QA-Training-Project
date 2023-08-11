@@ -31,7 +31,7 @@ with app.app_context():
 
     laptop_1 = Product(name='MacBook Pro', price=500, image="images/macbook_pro.jpg", description='Apple - terrible OS', category_id=2)
     laptop_2 = Product(name='Dell XPS 13', price=400, image="images/dell_xps_13.jpg", description='Windows - best OS', category_id=2)
-    laptop_3 = Product(name='Lenovo ThinkPad X1 Carbon', price=300, image="images/lenovo_thinpad_x1_carbon.jpg", description='Windows - best OS', category_id=2)
+    laptop_3 = Product(name='Lenovo ThinkPad X1 Carbon', price=300, image="images/lenovo_thinkpad_x1_carbon.jpg", description='Windows - best OS', category_id=2)
     laptop_4 = Product(name='HP Envy 13', price=200, image="images/hp_envy_13.jpg", description='Windows - best OS', category_id=2)
     laptop_5 = Product(name='Microsoft Surface Laptop 3', price=100, image="images/microsoft_surface_3.jpg", description='Windows - best OS', category_id=2)
     db.session.add(laptop_1)
