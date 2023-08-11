@@ -14,11 +14,10 @@ class SignUpForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=2, max=30), BannedChars(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-             raise ValidationError('Email already exists.')
+            raise ValidationError('Email already exists.')
         
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
