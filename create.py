@@ -1,6 +1,6 @@
 from app import app
 from application import db, bcrypt
-from application.models import Product, Category, User, Order, OrderItem
+from application.models import Product, Category, User, Order, OrderItem, Cart, CartItem, WishList, CartDisplay
 from datetime import datetime
 
 
@@ -29,11 +29,11 @@ with app.app_context():
     db.session.add(phone_5)
     db.session.commit()
 
-    laptop_1 = Product(name='MacBook Pro', price=500, image="macbook_pro.jpg", description='Apple - terrible OS', category_id=2)
-    laptop_2 = Product(name='Dell XPS 13', price=400, image="dell_xps_13.jpg", description='Windows - best OS', category_id=2)
-    laptop_3 = Product(name='Lenovo ThinkPad X1 Carbon', price=300, image="lenovo_thinkpad_x1_carbon.jpg", description='Windows - best OS', category_id=2)
-    laptop_4 = Product(name='HP Envy 13', price=200, image="hp_envy_13.jpg", description='Windows - best OS', category_id=2)
-    laptop_5 = Product(name='Microsoft Surface Laptop 3', price=100, image="microsoft_surface_3.jpg", description='Windows - best OS', category_id=2)
+    laptop_1 = Product(name='MacBook Pro', price=500, image="images/macbook_pro.jpg", description='Apple - terrible OS', category_id=2)
+    laptop_2 = Product(name='Dell XPS 13', price=400, image="images/dell_xps_13.jpg", description='Windows - best OS', category_id=2)
+    laptop_3 = Product(name='Lenovo ThinkPad X1 Carbon', price=300, image="images/lenovo_thinkpad_x1_carbon.jpg", description='Windows - best OS', category_id=2)
+    laptop_4 = Product(name='HP Envy 13', price=200, image="images/hp_envy_13.jpg", description='Windows - best OS', category_id=2)
+    laptop_5 = Product(name='Microsoft Surface Laptop 3', price=100, image="images/microsoft_surface_3.jpg", description='Windows - best OS', category_id=2)
     db.session.add(laptop_1)
     db.session.add(laptop_2)
     db.session.add(laptop_3)
@@ -41,11 +41,11 @@ with app.app_context():
     db.session.add(laptop_5)
     db.session.commit()
     
-    tv_1 = Product(name='Samsung Q90 QLED TV', price=500, image="samsung_q90.jpg", description='Good TV i guess', category_id=3)
-    tv_2 = Product(name='LG CX OLED TV', price=400, image="lg_cx_qled.jpg", description='Good TV i guess', category_id=3)
-    tv_3 = Product(name='Samsung Q80T QLED TV', price=300, image="samsung_q80t.jpg", description='Good TV i guess', category_id=3)
-    tv_4 = Product(name='Sony Bravia A8H OLED TV', price=200, image="sony_bravia.jpg", description='Good TV i guess', category_id=3)
-    tv_5 = Product(name='TCL 6-Series QLED TV', price=100, image="tcl_6series.jpg", description='Good TV i guess', category_id=3)
+    tv_1 = Product(name='Samsung Q90 QLED TV', price=500, image="images/samsung_q90.jpg", description='Good TV i guess', category_id=3)
+    tv_2 = Product(name='LG CX OLED TV', price=400, image="images/lg_cx_qled.jpg", description='Good TV i guess', category_id=3)
+    tv_3 = Product(name='Samsung Q80T QLED TV', price=300, image="images/samsung_q80t.jpg", description='Good TV i guess', category_id=3)
+    tv_4 = Product(name='Sony Bravia A8H OLED TV', price=200, image="images/sony_bravia.jpg", description='Good TV i guess', category_id=3)
+    tv_5 = Product(name='TCL 6-Series QLED TV', price=100, image="images/tcl_6series.jpg", description='Good TV i guess', category_id=3)
     db.session.add(tv_1)
     db.session.add(tv_2)
     db.session.add(tv_3)
