@@ -47,7 +47,7 @@
 
 
     // if there is an item in the form
-    if (document.querySelector('.update-form')){
+    if (document.querySelector('.update-form')) {
 
         const updateForms = document.querySelectorAll('.update-form');
         updateForms.forEach(form => {
@@ -71,9 +71,9 @@
         let prices = document.querySelectorAll('#product_total');
         prices.forEach(price => {
             total += parseInt(price.innerText.split('£ ')[1]);
-    });
-    total_amount.innerText = `£ ${total}`;
-}
+        });
+        total_amount.innerText = `£ ${total}`;
+    }
 
 
 </script>
