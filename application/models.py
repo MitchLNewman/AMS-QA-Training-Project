@@ -2,6 +2,8 @@ from application import db
 from wtforms.validators import ValidationError
 from datetime import datetime
 
+# Category class
+
 class Category(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
@@ -13,6 +15,8 @@ class Category(db.Model):
             'Category ID: ', str(self.id), '\r\n',
             'Name: ', self.name
         ])
+    
+# Product class
     
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +31,8 @@ class Product(db.Model):
             'Product ID: ', str(self.id), '\r\n',
             'Name: ', self.name, '\r\n', self.description
         ])
+
+# User and order related classes
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +73,8 @@ class OrderItem(db.Model):
             'OrderItem ID: ', str(self.id), '\r\n',
             'Order ID: ', str(self.order_id), '\r\n', str(self.quantity)
         ])
+
+# cart related classes 
 
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -140,7 +148,9 @@ class WishList(db.Model):
             'WishList ID: ', str(self.id), '\r\n',
             'Product ID: ', str(self.product_id)
         ])
-    
+
+# User input related classes 
+
 class CheckAdmin:
     def __init__(self, message=None):
         self.message = message
