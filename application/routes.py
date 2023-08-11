@@ -1,16 +1,14 @@
 from flask import render_template, request, redirect, url_for, session
 from application import app, db
-from application.models import Product, Category, User, Order, OrderItem, Cart, CartItem, WishList, CartDisplay
-from application.forms import SignUpForm, LoginForm
+from application.models import Product, Category, User, Orders, OrderItem, Cart, CartItem, WishList, CartDisplay, PaymentDetails
+from application.forms import SignUpForm, LoginForm, PaymentForm
 from flask_bcrypt import Bcrypt
 from application import bcrypt
-
+from datetime import datetime
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('home.html', title='Home')
-
-#Products routes 
 
 @app.route('/products', methods=['GET', 'POST'])
 def products():
@@ -26,13 +24,9 @@ def product(id):
     category = Category.query.get(product.category_id)
     return render_template('product.html', title='Product', product=product, category=category)
 
-#about routes
-
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html', title='About')
-
-# category routes
 
 @app.route('/category', methods=['GET', 'POST'])
 def contact():
@@ -40,11 +34,9 @@ def contact():
     products = Product.query.all()
     return render_template('category.html', title='Categories', categories=categories, products=products)
 
-# Cart related routes 
-
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
-       # if session id exists, find cart
+    # if session id exists, find cart
     if 'user_id' in session:
         cart = Cart.query.filter_by(user_id=session['user_id']).first()
         cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
@@ -65,8 +57,6 @@ def update_cart(id, quantity):
         # add product to cart
         cart.set_quantity(id, quantity)
         return redirect(url_for('cart'))
-    else:
-        return redirect(url_for('login'))
 
 @app.route('/add/<int:id>', methods=['GET', 'POST'])
 def add_to_cart(id):
@@ -76,6 +66,8 @@ def add_to_cart(id):
         # add product to cart
         cart.add_item(id)
         return redirect(url_for('cart'))
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/cart/remove/<int:id>', methods=['GET', 'POST'])
 def remove_from_cart(id):
@@ -92,8 +84,6 @@ def empty_cart():
     # remove product from cart
     cart.empty_cart()
     return redirect(url_for('cart'))
-
-# Signup routes login and out routes
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -114,7 +104,7 @@ def signup():
             return redirect(url_for('home'))
         else:
             print('not validated')
-        return render_template('/signup.html', title='Sign Up', form=form)
+    return render_template('/signup.html', title='Sign Up', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -149,3 +139,57 @@ def clear_variable():
     session.pop('user_id', None)  # Remove 'user_id' from session
     print("Session variable cleared!")
     return redirect(url_for('home'))
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if 'user_id' in session:
+        # if form has been submitted
+        if request.method == 'POST':
+            print('post')
+            # check if payment details already exist
+            if PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first():
+                payment_details = PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first()
+            else:
+                payment_details = PaymentDetails(
+                    user_id = session['user_id'],
+                    card_number = request.form['card_number'],
+                    expiry_date = request.form['expiry_date'],
+                    cvv = request.form['security_code'])
+            db.session.add(payment_details)
+            db.session.commit()
+            # create order
+            cart = Cart.query.filter_by(user_id=session['user_id']).first()
+            payment_details_id = PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first().id
+            cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
+            order = Orders(user_id=session['user_id'], date=datetime.now(), payment_details_id=payment_details_id)
+            db.session.add(order)
+            db.session.commit()
+            # get the order id from the order just created
+            order_id = Orders.query.filter_by(user_id=session['user_id'], payment_details_id=payment_details_id).first().id
+            print(order_id)
+            db.session.add(order)
+            for item in cart_items:
+                order_item = OrderItem(order_id=order.id, product_id=item.product_id, quantity=item.quantity)
+                db.session.add(order_item)
+
+            db.session.commit()
+            cart.empty_cart()
+            return redirect(url_for('home'))
+        
+
+        # find users cart
+        cart = Cart.query.filter_by(user_id=session['user_id']).first()
+        cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
+        cart_products = []
+        # search payment_details table for user_id
+        payment_details = PaymentDetails.query.filter_by(user_id=session['user_id']).all()
+        payment_form = PaymentForm()
+        for item in cart_items:
+            product = Product.query.get(item.product_id)
+            item = CartDisplay(product.id, product.name, product.price, item.quantity, product.image)
+            cart_products.append(item)
+        return render_template('/checkout.html', title='Checkout', products=cart_products, form=payment_form, payment_details=payment_details)
+    
+    
+    else:
+        return redirect(url_for('login'))
