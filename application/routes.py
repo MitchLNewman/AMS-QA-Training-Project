@@ -10,6 +10,8 @@ from application import bcrypt
 def home():
     return render_template('home.html', title='Home')
 
+#Products routes 
+
 @app.route('/products', methods=['GET', 'POST'])
 def products():
     products = Product.query.all()
@@ -23,15 +25,21 @@ def product(id):
     category = Category.query.get(product.category_id)
     return render_template('product.html', title='Product', product=product, category=category)
 
+#about routes
+
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html', title='About')
+
+# category routes
 
 @app.route('/category', methods=['GET', 'POST'])
 def contact():
     categories = Category.query.all()
     products = Product.query.all()
     return render_template('category.html', title='Categories', categories=categories, products=products)
+
+# Cart related routes 
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
@@ -81,6 +89,8 @@ def empty_cart():
     # remove product from cart
     cart.empty_cart()
     return redirect(url_for('cart'))
+
+# Signup routes login and out routes
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
