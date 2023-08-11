@@ -64,6 +64,8 @@ def update_cart(id, quantity):
         # add product to cart
         cart.set_quantity(id, quantity)
         return redirect(url_for('cart'))
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/add/<int:id>', methods=['GET', 'POST'])
 def add_to_cart(id):
