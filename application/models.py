@@ -110,7 +110,7 @@ class Cart(db.Model):
             db.session.delete(item)
             db.session.commit()
         
-        
+
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
@@ -131,7 +131,6 @@ class CartDisplay():
         self.quantity = quantity
         self.image = image
 
-    
 class WishList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
