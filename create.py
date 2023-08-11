@@ -53,4 +53,13 @@ with app.app_context():
     db.session.add(tv_5)
     db.session.commit()
 
+    user_mitch = User(name='Mitch', password=bcrypt.generate_password_hash('password'), email="Mitch@qa.com", address="1 Mitch Street", postcode=" MIT 3S", phone="01234567890")
     
+    user_josh = User(name='Josh', password=bcrypt.generate_password_hash('password'), email="josh@qa.com", address="1 Josh Street", postcode="JOS 3M", phone="01234567890")
+    
+    user_olly = User(name='Olly', password=bcrypt.generate_password_hash('password'), email="Olly@qa.com'", address="1 Olly Street", postcode="OLL 3N", phone="01234567890")
+    
+    db.session.add(user_mitch)
+    db.session.add(user_josh)
+    db.session.add(user_olly)
+    db.session.commit()
