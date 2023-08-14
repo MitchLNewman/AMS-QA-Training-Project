@@ -183,4 +183,3 @@ class BannedChars:
         for char in banned_chars:
             if char in field.data:
                 raise ValidationError(self.message)
-            
