@@ -52,6 +52,7 @@ class User(db.Model):
     
 class PaymentDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    cardholder_name = db.Column(db.String(30), nullable=False)
     card_number = db.Column(db.String(16), nullable=False)
     expiry_date = db.Column(db.String(5), nullable=False)
     cvv = db.Column(db.String(3), nullable=False)
@@ -61,6 +62,21 @@ class PaymentDetails(db.Model):
         return ''.join([
             'PaymentDetails ID: ', str(self.id), '\r\n',
             'User ID: ', str(self.user_id), '\r\n', str(self.card_number)
+        ])
+    
+class Address(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    house_name_num = db.Column(db.String(30), nullable=False)
+    street = db.Column(db.String(30), nullable=False)
+    town_city = db.Column(db.String(30), nullable=False)
+    postcode = db.Column(db.String(10), nullable=False)
+    user = db.relationship('User', backref='address', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return ''.join([
+            'Address ID: ', str(self.id), '\r\n',
+            'User ID: ', str(self.user_id), '\r\n', str(self.address)
         ])
 
 # Orders and cart related classes
@@ -94,7 +110,9 @@ class OrderItem(db.Model):
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    delivery_address_id = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=True)
+    address = db.relationship('Address', backref='card', foreign_keys=[delivery_address_id])
+    
     def __repr__(self):
         return ''.join([
             'Cart ID: ', str(self.id), '\r\n',
