@@ -10,8 +10,6 @@ from datetime import datetime
 def home():
     return render_template('home.html', title='Home')
 
-# Products and about routes
-
 @app.route('/products', methods=['GET', 'POST'])
 def products():
     products = Product.query.all()
@@ -29,8 +27,6 @@ def product(id):
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html', title='About')
-
-# Cart and category routes
 
 @app.route('/category', methods=['GET', 'POST'])
 def contact():
@@ -89,8 +85,6 @@ def empty_cart():
     cart.empty_cart()
     return redirect(url_for('cart'))
 
-# Signup and login routes
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
@@ -146,7 +140,25 @@ def clear_variable():
     print("Session variable cleared!")
     return redirect(url_for('home'))
 
-# Checkout and Payment routes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
