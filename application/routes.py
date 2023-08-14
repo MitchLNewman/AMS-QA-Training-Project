@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session
 from application import app, db
-from application.models import Product, Category, User, Orders, OrderItem, Cart, CartItem, CartDisplay, PaymentDetails, Address
-from application.forms import SignUpForm, LoginForm, PaymentForm, AddressForm
+from application.models import Product, Category, User, Orders, OrderItem, Cart, CartItem, WishList, CartDisplay, PaymentDetails
+from application.forms import SignUpForm, LoginForm, PaymentForm
 from flask_bcrypt import Bcrypt
 from application import bcrypt
 from datetime import datetime
@@ -9,6 +9,8 @@ from datetime import datetime
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('home.html', title='Home')
+
+# Product related routes
 
 @app.route('/products', methods=['GET', 'POST'])
 def products():
@@ -24,6 +26,8 @@ def product(id):
     category = Category.query.get(product.category_id)
     return render_template('product.html', title='Product', product=product, category=category)
 
+# About and category related routes 
+
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html', title='About')
@@ -34,9 +38,10 @@ def contact():
     products = Product.query.all()
     return render_template('category.html', title='Categories', categories=categories, products=products)
 
+#Cart related routes
+
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
-    # if session id exists, find cart
     if 'user_id' in session:
         cart = Cart.query.filter_by(user_id=session['user_id']).first()
         cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
@@ -52,18 +57,14 @@ def cart():
 @app.route('/cart/update/<int:id>/<int:quantity>', methods=['GET', 'POST'])
 def update_cart(id, quantity):
     if 'user_id' in session:
-        # find users cart
         cart = Cart.query.filter_by(user_id=session['user_id']).first()
-        # add product to cart
         cart.set_quantity(id, quantity)
         return redirect(url_for('cart'))
 
 @app.route('/add/<int:id>', methods=['GET', 'POST'])
 def add_to_cart(id):
     if 'user_id' in session:
-        # find users cart
         cart = Cart.query.filter_by(user_id=session['user_id']).first()
-        # add product to cart
         cart.add_item(id)
         return redirect(url_for('cart'))
     else:
@@ -71,19 +72,17 @@ def add_to_cart(id):
 
 @app.route('/cart/remove/<int:id>', methods=['GET', 'POST'])
 def remove_from_cart(id):
-    # find users cart
     cart = Cart.query.filter_by(user_id=session['user_id']).first()
-    # remove product from cart
     cart.remove_item(id)
     return redirect(url_for('cart'))
 
 @app.route('/empty-cart', methods=['GET', 'POST'])
 def empty_cart():
-    # find users cart
     cart = Cart.query.filter_by(user_id=session['user_id']).first()
-    # remove product from cart
     cart.empty_cart()
     return redirect(url_for('cart'))
+
+# Signup and Login related routes
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -116,9 +115,7 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             if user and bcrypt.check_password_hash(user.password, form.password.data):
                 print('user found')
-                # create session variable for user_id
                 session['user_id'] = user.id
-                # check if user has a cart
                 cart = Cart.query.filter_by(user_id=user.id).first()
                 if cart:
                     print('cart found')
@@ -140,56 +137,8 @@ def clear_variable():
     print("Session variable cleared!")
     return redirect(url_for('home'))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    form = AddressForm()
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    # if method is post
-    if request.method == 'POST':
-        # if form is valid
-        if form.validate_on_submit():
-            # check if address already exists
-            if Address.query.filter_by(user_id=session['user_id'], house_name_num=request.form["house_name_num"], street=request.form["street"]).first():
-                address = Address.query.filter_by(user_id=session['user_id'], house_name_num=request.form["house_name_num"], street=request.form["street"]).first()
-            else:
-                address = Address(user_id=session['user_id'], house_name_num=request.form["house_name_num"], street=request.form["street"], town_city=request.form["town_city"], postcode=request.form["postcode"])
-            cart = Cart.query.filter_by(user_id=session['user_id']).first()
-            db.session.add(cart)
-            db.session.commit()
-            cart.delivery_address_id = address.id
-            db.session.add(address)
-            db.session.commit()
-            return redirect(url_for('home'))
-        
-
-    cart = Cart.query.filter_by(user_id=session['user_id']).first()
-    cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
-    addresses = Address.query.filter_by(user_id=session['user_id']).all()
-    return render_template('/checkout.html', title='Checkout', addresses=addresses, cart_items=cart_items, form=form)
-
-@app.route('/complete-order', methods=['GET', 'POST'])
-def complete_order():
     if 'user_id' in session:
         # if form has been submitted
         if request.method == 'POST':
@@ -200,7 +149,6 @@ def complete_order():
             else:
                 payment_details = PaymentDetails(
                     user_id = session['user_id'],
-                    cardholder_name = request.form['cardholder_name'],
                     card_number = request.form['card_number'],
                     expiry_date = request.form['expiry_date'],
                     cvv = request.form['security_code'])
@@ -237,7 +185,7 @@ def complete_order():
             product = Product.query.get(item.product_id)
             item = CartDisplay(product.id, product.name, product.price, item.quantity, product.image)
             cart_products.append(item)
-        return render_template('/complete-order.html', title='Checkout', products=cart_products, form=payment_form, payment_details=payment_details)
+        return render_template('/checkout.html', title='Checkout', products=cart_products, form=payment_form, payment_details=payment_details)
     
     
     else:
