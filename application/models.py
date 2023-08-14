@@ -2,7 +2,6 @@ from application import db
 from wtforms.validators import ValidationError
 from datetime import datetime
 
-# category class
 
 class Category(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
@@ -14,8 +13,6 @@ class Category(db.Model):
             'Category ID: ', str(self.id), '\r\n',
             'Name: ', self.name
         ])
-
-# Product class
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,15 +29,11 @@ class Product(db.Model):
             'Name: ', self.name, '\r\n', self.description
         ])
 
-# Payment and user related classes
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    address = db.Column(db.String(100), nullable=False)
-    postcode = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     orders = db.relationship('Orders', backref='customer', lazy=True)
 
@@ -79,8 +72,6 @@ class Address(db.Model):
             'User ID: ', str(self.user_id), '\r\n', str(self.address)
         ])
 
-# Orders and cart related classes
-
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -112,7 +103,7 @@ class Cart(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     delivery_address_id = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=True)
     address = db.relationship('Address', backref='card', foreign_keys=[delivery_address_id])
-    
+
     def __repr__(self):
         return ''.join([
             'Cart ID: ', str(self.id), '\r\n',
@@ -172,18 +163,8 @@ class CartDisplay():
         self.quantity = quantity
         self.image = image
 
-class WishList(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
 
-    def __repr__(self):
-        return ''.join([
-            'WishList ID: ', str(self.id), '\r\n',
-            'Product ID: ', str(self.product_id)
-        ])
-
-# Login related classes
-
+    
 class CheckAdmin:
     def __init__(self, message=None):
         self.message = message
