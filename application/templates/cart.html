@@ -46,7 +46,7 @@
 <script>
 
 
-    // if there is an item in the form
+    
     if (document.querySelector('.update-form')) {
 
         const updateForms = document.querySelectorAll('.update-form');
@@ -62,7 +62,7 @@
 
                 const newAction = `/cart/update/${productId}/${quantity}`;
                 form.action = newAction;
-                // Submit the form
+                
                 form.submit();
             });
         });

@@ -42,11 +42,11 @@
     
         dropDown.addEventListener('change', function() {
             let selectedValue = this.options[dropDown.selectedIndex].value;
-            // fill form with details from selected card
+            
             let cardNumber = document.querySelector('#card_number');
             let expiryDate = document.querySelector('#expiry_date');
             let securityCode = document.querySelector('#security_code');
-            // split the selected value based on the delimiter ','
+            
             let cardDetails = selectedValue.split(',')
             cardNumber.value = cardDetails[0];
             expiryDate.value = cardDetails[1];
