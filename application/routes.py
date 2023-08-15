@@ -133,17 +133,17 @@ def login():
 
 @app.route('/logout')
 def clear_variable():
-    session.pop('user_id', None)  # Remove 'user_id' from session
+    session.pop('user_id', None) 
     print("Session variable cleared!")
     return redirect(url_for('home'))
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     if 'user_id' in session:
-        # if form has been submitted
+        
         if request.method == 'POST':
             print('post')
-            # check if payment details already exist
+            
             if PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first():
                 payment_details = PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first()
             else:
@@ -154,14 +154,14 @@ def checkout():
                     cvv = request.form['security_code'])
             db.session.add(payment_details)
             db.session.commit()
-            # create order
+           
             cart = Cart.query.filter_by(user_id=session['user_id']).first()
             payment_details_id = PaymentDetails.query.filter_by(user_id=session['user_id'], card_number=request.form['card_number']).first().id
             cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
             order = Orders(user_id=session['user_id'], date=datetime.now(), payment_details_id=payment_details_id)
             db.session.add(order)
             db.session.commit()
-            # get the order id from the order just created
+           
             order_id = Orders.query.filter_by(user_id=session['user_id'], payment_details_id=payment_details_id).first().id
             print(order_id)
             db.session.add(order)
@@ -174,11 +174,11 @@ def checkout():
             return redirect(url_for('home'))
         
 
-        # find users cart
+      
         cart = Cart.query.filter_by(user_id=session['user_id']).first()
         cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
         cart_products = []
-        # search payment_details table for user_id
+        
         payment_details = PaymentDetails.query.filter_by(user_id=session['user_id']).all()
         payment_form = PaymentForm()
         for item in cart_items:
